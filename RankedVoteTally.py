@@ -1,5 +1,5 @@
 from RankedVote import RankedVote
-from FrequencyTable import FrequencyTable
+from TotalFrequencyTable import TotalFrequencyTable
 
 class RankedVoteTally:
     '''A tally of ranked votes that can be used for single transferrable vote and instant runoff systems'''
@@ -30,7 +30,7 @@ class RankedVoteTally:
             return total_votes
         raise AttributeError(f'object has no attribute {name!r}')
 
-    def assign_seats(self, num_seats:int)->FrequencyTable:
+    def assign_seats(self, num_seats:int)->TotalFrequencyTable:
         '''Proportionally assign a number of seats based on the currently counted votes
     num_seats: The number of seats that need to be assigned. Use 1 for instant runoff and use >1 for single transferrable vote
     return: A frequency table of the seats assigned to each party'''
@@ -40,8 +40,8 @@ class RankedVoteTally:
             raise ValueError(f'The number of seats must be greater than 0, not {num_seats}')
         total_votes = self.total_votes
         threshold = total_votes / num_seats
-        seats = FrequencyTable()
-        tally = FrequencyTable()
+        seats = TotalFrequencyTable()
+        tally = TotalFrequencyTable()
         for party in self._vote_tree:
             tally[party] = self._vote_tree[party].total_votes
         while len(seats) < num_seats:

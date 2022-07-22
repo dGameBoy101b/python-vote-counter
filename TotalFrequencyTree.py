@@ -1,8 +1,8 @@
-class FrequencyTree:
-    '''Stores lists of items in a frequency tree'''
+class TotalFrequencyTree:
+    '''Stores lists of items in a frequency tree with the constraint that the frequency of a node must be at least the total of the child frequencies'''
 
     class Node:
-        '''A node for a frequency tree'''
+        '''A node for a total frequency tree'''
 
         def __init__(self, total_frequency:float=0, children:dict=dict()):
             '''Initialiser constructor
@@ -16,7 +16,7 @@ class FrequencyTree:
                 children = dict(children)
             total = 0
             for key in children:
-                if not isinstance(children[key], FrequencyTree.Node):
+                if not isinstance(children[key], TotalFrequencyTree.Node):
                     raise TypeError(f'Every value of children must be nodes, not a {type(children[key])}')
                 total += children[key].total_frequency
             self.children = children
@@ -24,7 +24,7 @@ class FrequencyTree:
             return
 
         def __repr__(self)->str:
-            return f'FrequencyTree.Node({self.total_frequency!r},{self.children!r})'
+            return f'TotalFrequencyTree.Node({self.total_frequency!r},{self.children!r})'
 
         def __str__(self)->str:
             if len(self.children) > 0:
@@ -32,15 +32,15 @@ class FrequencyTree:
             return str(self.total_frequency)
 
         def __eq__(self, other)->bool:
-            return isinstance(other, FrequencyTree.Node) and self.total_frequency == other.total_frequency and self.children == other.children
+            return isinstance(other, TotalFrequencyTree.Node) and self.total_frequency == other.total_frequency and self.children == other.children
 
         def copy(self)->'Node':
             '''Create a shallow copy'''
-            return FrequencyTree.Node(self.total_frequency, self.children)
+            return TotalFrequencyTree.Node(self.total_frequency, self.children)
 
         def deep_copy(self)->'Node':
             '''Create a deep copy'''
-            return FrequencyTree.Node(self.total_frequency, dict([(key, self.children[key].deep_copy()) for key in self.children]))
+            return TotalFrequencyTree.Node(self.total_frequency, dict([(key, self.children[key].deep_copy()) for key in self.children]))
 
     def __init__(self, root:Node=Node()):
         if not isinstance(root, Node):
@@ -49,13 +49,13 @@ class FrequencyTree:
         return
 
     def __repr__(self)->str:
-        return f'FrequencyTree({self.root!r})'
+        return f'TotalFrequencyTree({self.root!r})'
 
     def __str__(self)->str:
         return str(self.root)
 
     def __eq__(self, other)->bool:
-        return isinstance(other, FrequencyTree) and self.root == other.root
+        return isinstance(other, TotalFrequencyTree) and self.root == other.root
 
     def add(self, items:list, frequency:float=1):
         '''Add the given list of items to the tree with the given frequency'''
@@ -116,20 +116,20 @@ class FrequencyTree:
         return node.total_frequency
 
 if __name__ == '__main__':
-    assert FrequencyTree.Node().total_frequency == 0
-    assert FrequencyTree.Node().children == dict()
-    assert FrequencyTree.Node(3).total_frequency == 3
-    assert FrequencyTree.Node(0,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}).children == {'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}
-    assert FrequencyTree.Node(54.2,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}).total_frequency == 54.2
-    assert FrequencyTree.Node(0,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}).total_frequency == 13+.4
-    assert repr(FrequencyTree.Node(0,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)})) == 'FrequencyTree.Node('+repr(13+.4)+','+repr({'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)})+')'
-    assert str(FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13,{123:FrequencyTree.Node(4.38)}),None:FrequencyTree.Node(.4)})) == str(54.0)+'\n'+str('abc')+'\t'+str(13.0)+'\n\t'+str(123)+'\t'+str(4.38)+'\n'+str(None)+'\t'+str(0.4)
-    assert FrequencyTree.Node(0,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}) == FrequencyTree.Node(0,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)})
-    assert FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}) != FrequencyTree.Node(125,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)})
-    assert FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}) != FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13.2),None:FrequencyTree.Node(.4)})
-    assert FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}) != FrequencyTree.Node(54,{None:FrequencyTree.Node(.4)})
-    assert FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)}) != FrequencyTree.Node(54,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4),123:FrequencyTree.Node(8.3)})
-    test_node = FrequencyTree.Node(0,{'abc':FrequencyTree.Node(13),None:FrequencyTree.Node(.4)})
+    assert TotalFrequencyTree.Node().total_frequency == 0
+    assert TotalFrequencyTree.Node().children == dict()
+    assert TotalFrequencyTree.Node(3).total_frequency == 3
+    assert TotalFrequencyTree.Node(0,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}).children == {'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}
+    assert TotalFrequencyTree.Node(54.2,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}).total_frequency == 54.2
+    assert TotalFrequencyTree.Node(0,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}).total_frequency == 13+.4
+    assert repr(TotalFrequencyTree.Node(0,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)})) == 'TotalFrequencyTree.Node('+repr(13+.4)+','+repr({'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)})+')'
+    assert str(TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13,{123:TotalFrequencyTree.Node(4.38)}),None:TotalFrequencyTree.Node(.4)})) == str(54.0)+'\n'+str('abc')+'\t'+str(13.0)+'\n\t'+str(123)+'\t'+str(4.38)+'\n'+str(None)+'\t'+str(0.4)
+    assert TotalFrequencyTree.Node(0,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}) == TotalFrequencyTree.Node(0,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)})
+    assert TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}) != TotalFrequencyTree.Node(125,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)})
+    assert TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}) != TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13.2),None:TotalFrequencyTree.Node(.4)})
+    assert TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}) != TotalFrequencyTree.Node(54,{None:TotalFrequencyTree.Node(.4)})
+    assert TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)}) != TotalFrequencyTree.Node(54,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4),123:TotalFrequencyTree.Node(8.3)})
+    test_node = TotalFrequencyTree.Node(0,{'abc':TotalFrequencyTree.Node(13),None:TotalFrequencyTree.Node(.4)})
     assert test_node is not test_node.copy()
     assert test_node == test_node.copy()
     assert test_node.children is test_node.copy().children
