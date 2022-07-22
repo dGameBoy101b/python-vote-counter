@@ -1,18 +1,19 @@
-from PreferentialVote import PreferentialVote
+from RankedVote import RankedVote
 from FrequencyTable import FrequencyTable
 
-class PreferentialVoteTally:
-    '''A tally of preferential votes'''
+class RankedVoteTally:
+    '''A tally of ranked votes that can be used for single transferrable vote and instant runoff systems'''
 
     def __init__(self):
         self._vote_tree = dict()
         return
 
-    def add_vote(self, vote:PreferentialVote):
-        if isinstance(vote[0], str):
-            vote = PreferentialVote(vote)
-        if not isinstance(vote, PreferentialVote):
-            raise TypeError(f'Can only add preferential votes, not {type(vote)}')
+    def add_vote(self, vote:RankedVote):
+        if not isinstance(vote, RankedVote):
+            try:
+                vote = RankedVote(vote)
+            except Exception:
+                raise TypeError(f'Can only add ranked votes, not {type(vote)}')
         tree = self._vote_tree
         for party in vote:
             if party not in tree:
@@ -30,6 +31,9 @@ class PreferentialVoteTally:
         raise AttributeError(f'object has no attribute {name!r}')
 
     def assign_seats(self, num_seats:int)->FrequencyTable:
+        '''Proportionally assign a number of seats based on the currently counted votes
+    num_seats: The number of seats that need to be assigned. Use 1 for instant runoff and use >1 for single transferrable vote
+    return: A frequency table of the seats assigned to each party'''
         if not isinstance(num_seats, int):
             raise TypeError(f'The number of seats must be an integer, not a {type(num_seats)}')
         if num_seats < 1:
